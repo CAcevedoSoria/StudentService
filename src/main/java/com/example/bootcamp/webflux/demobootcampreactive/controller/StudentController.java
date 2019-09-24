@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import com.netflix.hystrix.Hystrix;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/v1.0/students")
 public class StudentController {
+
+  private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
   @Autowired
   private StudentService studentService;
@@ -56,6 +60,8 @@ public class StudentController {
    */
   @GetMapping
   public Mono<ResponseEntity<Flux<Student>>> findAll() {
+
+    logger.info("Request received at the controller. findall: " );
     return Mono.just(
       ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -70,6 +76,7 @@ public class StudentController {
    */
   @GetMapping("/{id}")
   public Mono<ResponseEntity<Student>> findById(@PathVariable String id) {
+    logger.info("Request received at the controller. PersonId: " + id);
     return studentService
       .findById(id)
       .map(p -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(p));
